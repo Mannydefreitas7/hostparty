@@ -1,0 +1,7 @@
+[test]
+# Run tests in src/tests directory
+root = "./src/tests"
+
+[install]
+# Use exact versions
+exact = true

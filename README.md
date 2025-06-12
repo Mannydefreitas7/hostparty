@@ -1,107 +1,353 @@
-```
-      /)
-    (/   ___ _  _/___   _   __ _/_
-    / )_(_) /_)_(__/_)_(_(_/ (_(__(_/_ 🎉
-                .-/              .-/
-               (_/              (_/
-```
+<div align="center">
 
-## Cross platform CLI editor & JavaScript API for managing your hostsfile.
+![HostParty Header](./assets/header.svg)
 
-![NPM Stats](https://nodei.co/npm/hostparty.png?downloads=true&downloadRank=true&stars=true)
+**Cross-platform CLI tool & TypeScript API for managing your hosts file**
 
-[![Build Status](https://travis-ci.org/drb/hostparty.svg)](https://travis-ci.org/drb/hostparty) [![npm version](https://badge.fury.io/js/hostparty.svg)](http://badge.fury.io/js/hostparty)
+[![NPM Version](https://img.shields.io/npm/v/hostparty.svg)](https://www.npmjs.com/package/hostparty)
+[![CI](https://github.com/MannyDeFreitas7/hostparty/actions/workflows/ci.yml/badge.svg)](https://github.com/MannyDeFreitas7/hostparty/actions/workflows/ci.yml)
+[![Release](https://github.com/MannyDeFreitas7/hostparty/actions/workflows/release.yml/badge.svg)](https://github.com/MannyDeFreitas7/hostparty/actions/workflows/release.yml)
+[![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+[![Bun](https://img.shields.io/badge/Bun-000000?logo=bun&logoColor=white)](https://bun.sh)
+[![ESM](https://img.shields.io/badge/ESM-Module-brightgreen)](https://nodejs.org/api/esm.html)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-### Installing:
+*Programmatically manage your system's hosts file with ease. Built with modern TypeScript, ESM modules, and Bun.*
 
-To use as a CLI tool, you can install hostparty globally.
+[Installation](#installation) • [CLI Usage](#cli-usage) • [API Reference](#api-reference) • [Examples](#examples)
 
-`npm install -g hostparty`
+</div>
 
-Or, `require('hostparty')` in your own applications to use the API:
+---
 
-`npm install hostparty --save`
+## ✨ Features
 
-### API:
+- 🔧 **Cross-platform**: Works on Windows, macOS, and Linux
+- 🎯 **Type-safe**: Full TypeScript support with comprehensive type definitions
+- ⚡ **Modern**: Built with Bun, ESM modules, and async/await
+- 🛡️ **Safe**: Protects system-critical entries (can be overridden with `--force`)
+- 📝 **Flexible**: Both CLI tool and programmatic API
+- 🧪 **Tested**: Comprehensive test suite with Bun test runner
 
-All API methods return thenable promises.
+## 📦 Installation
 
-```javascript
-let party = require('hostparty');
+### Global Installation (CLI)
 
+```bash
+# Using npm
+npm install -g hostparty
 
-// add a couple of hosts mapping to ip 127.0.0.1
-party.add('127.0.0.1', ['party-started.com', 'party-pooper.com']);
+# Using bun (recommended)
+bun install -g hostparty
 
-
-// see who we have in our hosts file
-party.list().then((hosts)=>{
-
-    // `hosts` is an object containing the ip as a key, and the hostnames(s) bound as an array
-    // 127.0.0.1 party-started.com party-pooper.com
-});
-
-
-// remove the party pooper from its bound ip
-party.purge('party-pooper.com');
-
-
-// remove all entries pointing to ips 127.0.0.1 and 8.8.4.4
-party.remove(['127.0.0.1', '8.8.4.4']);
-
-
-// try and remove a protected IP
-party
-    .remove('::1')
-    .then(()=>{
-        console.log("All good");
-    })
-    .catch((e)=>{
-        console.error('Error found [%s]. Try using the force flag.', e.message);
-    });
-
-
-// set options to change the default path, and override any warnings
-party
-    .setup({
-        // override the path to the file
-        path:   '~/my-own/hosts',
-        // ignores validation
-        force:  true
-    })
-    .remove('::1')
-    .then(()=>{
-        console.log("All good");
-    });
-
+# Using yarn
+yarn global add hostparty
 ```
 
-### CLI Usage:
+### Local Installation (API)
 
-From hostparty --help:
+```bash
+# Using npm
+npm install hostparty
 
-```
-  Usage: hostparty [options] [command]
+# Using bun (recommended)
+bun add hostparty
 
-
-  Commands:
-
-    list [options] [hostname]      Outputs the hosts file with optional matching hostname.
-    add [options] [ip] [hosts...]  Adds a new host(s) entry for an IP address.
-    remove [options] [ips...]      Removes all entries for an IP address.
-    purge [options] [hosts...]     Removes all host(s) specified.
-
-  Options:
-
-    -p, --path          Path to file (auto-detection is enabled by default)
-    -f, --force         Disable any validation on protected methods
-    -ng, --no-group     Don't group by IP
-    -h, --help          Output usage information
-    -V, --version       Output the version number
+# Using yarn
+yarn add hostparty
 ```
 
-### Notes:
+## 🚀 CLI Usage
 
-Some entries such as `::1` on OSX is protected from calls to `remove()` as this is a loopback address used by the operating system during the boot cycle. Purge is supported for hosts bound to the address, but a purge on `localhost` for this IP is protected unless the `--force` flag is used.
+### Basic Commands
 
-More docs coming! 🎉
+```bash
+# List all entries in hosts file
+hostparty list
+
+# Add a hostname to an IP
+hostparty add 127.0.0.1 myapp.local
+
+# Add multiple hostnames to an IP
+hostparty add 192.168.1.100 api.local admin.local
+
+# Remove all entries for an IP
+hostparty remove 192.168.1.100
+
+# Remove specific hostnames (regardless of IP)
+hostparty purge myapp.local api.local
+
+# Filter hosts by hostname
+hostparty list local
+```
+
+### Advanced Options
+
+```bash
+# Use custom hosts file path
+hostparty list --path /custom/path/hosts
+
+# Force operations on protected entries
+hostparty remove ::1 --force
+
+# Display one hostname per line instead of grouping
+hostparty list --no-group
+
+# Show help
+hostparty --help
+
+# Show version
+hostparty --version
+```
+
+### Examples
+
+```bash
+# Development setup
+hostparty add 127.0.0.1 myapp.local api.myapp.local admin.myapp.local
+
+# Staging environment
+hostparty add 192.168.1.50 staging.myapp.com staging-api.myapp.com
+
+# Block websites (redirect to localhost)
+hostparty add 127.0.0.1 facebook.com www.facebook.com
+
+# Clean up development entries
+hostparty purge myapp.local api.myapp.local admin.myapp.local
+```
+
+## 🔧 API Reference
+
+### Import
+
+```typescript
+import party from 'hostparty';
+// or
+import { setup, add, remove, list, purge } from 'hostparty';
+```
+
+### Setup Options
+
+```typescript
+import party, { type PartyOptions } from 'hostparty';
+
+const options: PartyOptions = {
+  path: '/custom/hosts',      // Custom hosts file path
+  force: true,                // Allow operations on protected entries
+  group: false               // Don't group hostnames by IP
+};
+
+party.setup(options);
+```
+
+### Methods
+
+#### `add(ip: string, hostNames: string | string[]): Promise<void>`
+
+Add hostname(s) to an IP address.
+
+```typescript
+// Add single hostname
+await party.add('127.0.0.1', 'myapp.local');
+
+// Add multiple hostnames
+await party.add('192.168.1.100', ['api.local', 'admin.local']);
+```
+
+#### `remove(ips: string | string[]): Promise<void>`
+
+Remove entire IP entries from hosts file.
+
+```typescript
+// Remove single IP
+await party.remove('192.168.1.100');
+
+// Remove multiple IPs
+await party.remove(['192.168.1.100', '192.168.1.101']);
+```
+
+#### `purge(hostNames: string | string[]): Promise<void>`
+
+Remove specific hostnames from any IP mapping.
+
+```typescript
+// Remove single hostname
+await party.purge('myapp.local');
+
+// Remove multiple hostnames
+await party.purge(['api.local', 'admin.local']);
+```
+
+#### `list(filter?: string): Promise<HostsMap>`
+
+List hosts file contents with optional filtering.
+
+```typescript
+import { type HostsMap } from 'hostparty';
+
+// List all entries
+const hosts: HostsMap = await party.list();
+
+// Filter by hostname
+const filtered = await party.list('local');
+
+console.log(hosts);
+// Output: { '127.0.0.1': ['localhost', 'myapp.local'] }
+```
+
+## 📝 Examples
+
+### Basic Usage
+
+```typescript
+import party from 'hostparty';
+
+async function setupDevEnvironment() {
+  try {
+    // Add development domains
+    await party.add('127.0.0.1', [
+      'myapp.local',
+      'api.myapp.local',
+      'admin.myapp.local'
+    ]);
+    
+    // List current entries
+    const hosts = await party.list();
+    console.log('Current hosts:', hosts);
+    
+    console.log('✅ Development environment ready!');
+  } catch (error) {
+    console.error('❌ Setup failed:', error.message);
+  }
+}
+
+setupDevEnvironment();
+```
+
+### Advanced Configuration
+
+```typescript
+import party, { type PartyOptions, type HostsMap } from 'hostparty';
+
+class HostsManager {
+  constructor(private options: PartyOptions = {}) {
+    party.setup(this.options);
+  }
+  
+  async addDevDomains(ip: string, domains: string[]): Promise<void> {
+    await party.add(ip, domains);
+    console.log(`✅ Added ${domains.length} domains to ${ip}`);
+  }
+  
+  async cleanup(domains: string[]): Promise<void> {
+    await party.purge(domains);
+    console.log(`🧹 Cleaned up ${domains.length} domains`);
+  }
+  
+  async listByFilter(filter: string): Promise<HostsMap> {
+    return await party.list(filter);
+  }
+}
+
+// Usage
+const manager = new HostsManager({ force: true });
+
+await manager.addDevDomains('127.0.0.1', [
+  'myapp.test',
+  'api.myapp.test'
+]);
+
+const devHosts = await manager.listByFilter('test');
+console.log('Development hosts:', devHosts);
+```
+
+### Error Handling
+
+```typescript
+import party from 'hostparty';
+
+async function safeHostsOperation() {
+  try {
+    await party.add('invalid-ip', 'test.local');
+  } catch (error) {
+    if (error.message.includes('Invalid IP address')) {
+      console.error('❌ Please provide a valid IP address');
+    } else if (error.message.includes('permission denied')) {
+      console.error('❌ Permission denied. Try running with sudo/administrator');
+    } else {
+      console.error('❌ Operation failed:', error.message);
+    }
+  }
+}
+```
+
+## 🛡️ Protected Entries
+
+HostParty protects certain system-critical entries by default:
+
+- **IPs**: `::1`, `fe80::1%lo0`
+- **Hostnames**: `localhost`
+
+Use the `--force` flag or `{ force: true }` option to override protection.
+
+## 🗂️ File Locations
+
+HostParty automatically detects your system's hosts file:
+
+- **Linux/macOS**: `/etc/hosts`
+- **Windows**: `%SystemRoot%\System32\drivers\etc\hosts`
+
+## 🔨 Development
+
+### Prerequisites
+
+- [Bun](https://bun.sh) (recommended) or Node.js 18+
+- TypeScript knowledge for contributing
+
+### Setup
+
+```bash
+# Clone the repository
+git clone https://github.com/MannyDeFreitas7/hostparty.git
+cd hostparty
+
+# Install dependencies
+bun install
+
+# Build the project
+bun run build
+
+# Run tests
+bun test
+
+# Development mode (watch)
+bun run dev
+```
+
+### Available Scripts
+
+```bash
+bun run build      # Compile TypeScript to dist/
+bun run dev        # TypeScript watch mode
+bun test           # Run tests with Bun
+bun run lint       # Type checking
+bun run clean      # Remove build artifacts
+```
+
+## 📜 License
+
+MIT License - see [LICENSE](LICENSE) file for details.
+
+## 👨‍💻 Author
+
+**Manuel De Freitas** ([@MannyDeFreitas7](https://github.com/MannyDeFreitas7))
+
+---
+
+<div align="center">
+
+**⭐ If you find HostParty useful, please give it a star on GitHub! ⭐**
+
+[GitHub](https://github.com/MannyDeFreitas7/hostparty) • [NPM](https://www.npmjs.com/package/hostparty) • [Issues](https://github.com/MannyDeFreitas7/hostparty/issues)
+
+</div>
