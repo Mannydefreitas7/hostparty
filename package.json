@@ -1,44 +1,71 @@
 {
-  "name": "hostparty",
-  "version": "1.0.16",
-  "description": "Programmatic and CLI editing for OS hosts file",
-  "main": "app.js",
-  "scripts": {
-    "test": "grunt test"
-  },
-  "bin": {
-    "hostparty": "./bin/cli.js"
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/drb/hostparty"
-  },
-  "homepage": "https://github.com/drb/hostparty",
-  "keywords": [
-    "hosts file",
-    "hostsfile",
-    "/etc/hosts",
-    "local DNS management",
-    "CLI DNS"
-  ],
-  "author": "Dave Bullough <dave.bullough@gmail.com>",
-  "license": "MIT",
-  "dependencies": {
-    "bluebird": "^3.5.0",
-    "cli-color": "^1.2.0",
-    "commander": "^2.11.0",
-    "is-ip": "^1.0.0",
-    "lodash": "^4.16.6",
-    "text-table": "^0.2.0"
-  },
-  "devDependencies": {
-    "chai": "^3.5.0",
-    "grunt": "^0.4.5",
-    "grunt-contrib-jshint": "^1.0.0",
-    "grunt-contrib-watch": "^1.0.0",
-    "grunt-simple-mocha": "^0.4.1",
-    "jshint-stylish": "^2.2.0",
-    "mocha": "^2.4.5",
-    "supertest": "^2.0.1"
-  }
+    "name": "hostparty",
+    "version": "1.0.0",
+    "description": "Programmatic and CLI editing for OS hosts file",
+    "type": "module",
+    "main": "dist/app.js",
+    "types": "dist/app.d.ts",
+    "exports": {
+        ".": {
+            "import": "./dist/app.js",
+            "types": "./dist/app.d.ts"
+        }
+    },
+    "scripts": {
+        "build": "bun run tsc",
+        "dev": "bun run tsc --watch",
+        "test": "bun test",
+        "lint": "bun run tsc --noEmit",
+        "clean": "rm -rf dist",
+        "prepack": "bun run clean && bun run build",
+        "prepublishOnly": "bun run lint && bun run test"
+    },
+    "bin": {
+        "hostparty": "./dist/bin/cli.js"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/MannyDeFreitas7/hostparty"
+    },
+    "homepage": "https://github.com/MannyDeFreitas7/hostparty",
+    "keywords": [
+        "hosts file",
+        "hostsfile",
+        "/etc/hosts",
+        "local DNS management",
+        "CLI DNS",
+        "typescript",
+        "bun",
+        "esm"
+    ],
+    "author": "Manuel De Freitas <@MannyDeFreitas7>",
+    "license": "MIT",
+    "files": [
+        "dist/**/*",
+        "assets/header.svg",
+        "README.md",
+        "LICENSE",
+        "MIGRATION.md"
+    ],
+    "engines": {
+        "node": ">=18.0.0"
+    },
+    "publishConfig": {
+        "access": "public",
+        "registry": "https://registry.npmjs.org/"
+    },
+    "dependencies": {
+        "cli-color": "^1.2.0",
+        "commander": "^2.11.0",
+        "is-ip": "^1.0.0",
+        "text-table": "^0.2.0"
+    },
+    "devDependencies": {
+        "@types/bun": "1.2.15",
+        "@types/cli-color": "^2.0.6",
+        "@types/is-ip": "^2.0.0",
+        "@types/node": "^20.0.0",
+        "@types/text-table": "^0.2.5",
+        "typescript": "^5.0.0"
+    }
 }

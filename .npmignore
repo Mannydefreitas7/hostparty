@@ -1,0 +1,36 @@
+# Source files
+src/
+tests/
+*.test.ts
+*.test.js
+
+# Development files
+.github/
+.vscode/
+.idea/
+*.log
+.DS_Store
+Thumbs.db
+
+# Configuration files
+tsconfig.json
+bunfig.toml
+.jshintrc
+Gruntfile.js
+
+# Build tools
+node_modules/
+.git/
+.gitignore
+
+# Development dependencies
+package-lock.json
+bun.lockb
+
+# Documentation (keep essential ones)
+MIGRATION.md
+
+# Keep these for NPM
+# README.md
+# LICENSE
+# assets/header.svg
